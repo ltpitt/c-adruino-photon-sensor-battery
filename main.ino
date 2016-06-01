@@ -7,9 +7,6 @@
 // When OTA mode is on the Particle Photon will not go to SLEEP_MODE_DEEP and the onboard led will be on 
 // Davide Nastri, 06/2016
 
-
-
-
 // Libraries 
 #include "HttpClient/HttpClient.h" // HttpClient 
 #include "PietteTech_DHT/PietteTech_DHT.h" // DHT22 (Temperature and Humidity sensor)
@@ -173,5 +170,5 @@ void loop()
         // Delay 9000 milliseconds
         delay(9000);
     }
-    
+
 }
