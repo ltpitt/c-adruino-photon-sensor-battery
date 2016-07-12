@@ -4,10 +4,11 @@
 // for a very low energy use (if you need to work with batteries)
 //
 // OTA update is enabled using a simple http get of a variable on any specified Webserver path
-// When OTA mode is on the Particle Photon will not go to SLEEP_MODE_DEEP and the onboard led will be on 
+// When OTA mode is on the Particle Photon will not go to SLEEP_MODE_DEEP.
+// Also the onboard led will be on and a notification will be send (using external code).
 // Davide Nastri, 06/2016
 
-// Libraries 
+// Libraries includes
 #include "HttpClient/HttpClient.h" // HttpClient 
 #include "PietteTech_DHT/PietteTech_DHT.h" // DHT22 (Temperature and Humidity sensor)
 #include "math.h" // Math library for sensor values calculation
@@ -153,22 +154,33 @@ void loop()
     Serial.println(DHT.getDewPointSlow());
 
     // Uncomment or comment below rows accoring to the sensor you are going to flash
-    //Particle.publish("1_floor_temp", String(temp,2), PRIVATE);
-    //Particle.publish("1_floor_hum", String(umid, 2), PRIVATE);
-    Particle.publish("2_floor_temp", String(temp,2), PRIVATE);
-    Particle.publish("2_floor_hum", String(umid), PRIVATE);
+    //Particle.publish("1_floor_temp", String(temp,1), PRIVATE);
+    //Particle.publish("1_floor_hum", String(umid, 1), PRIVATE);
+    Particle.publish("2_floor_temp", String(temp,1), PRIVATE);
+    Particle.publish("2_floor_hum", String(umid,1), PRIVATE);
 
     // Check if OTA update is enabled
     if (response.body=="off") {
         // Turn off onboard led
         digitalWrite(D7, LOW);
-        // Put Particle Photon in deep sleep for specified number of seconds
+        // Put Particle Photon in deep sleep for 900 seconds (15 minutes)
         System.sleep(SLEEP_MODE_DEEP,900);
     } else {
         // Turn on onboard led
         digitalWrite(D7, HIGH);
-        // Delay 9000 milliseconds
-        delay(9000);
+        // Send notification
+        request.hostname = "YOURIP"; // Insert your Webserver IP
+        request.port = YOURPORT; // Insert your Webserver PORT
+        request.path = "YOUR/URL"; // Webserver url that sends ota notification to user
+        // Get request
+        Serial.print("Application>\tSending OTA on notification to user");
+        http.get(request, response, headers);
+        Serial.print("Application>\tResponse status: ");
+        Serial.println(response.status);
+        Serial.print("Application>\tHTTP Response Body: ");
+        Serial.println(response.body);
+        // Delay 900000 milliseconds (15 minutes)
+        delay(900000);
     }
-
+    
 }
