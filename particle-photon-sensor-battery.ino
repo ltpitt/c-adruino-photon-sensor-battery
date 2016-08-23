@@ -58,8 +58,6 @@ void setup()
     
     pinMode(D7, OUTPUT);
 
-    Particle.variable("2_floor_hum", umid); //write the value on the cloud variable called "2_floor_hum"
-    Particle.variable("2_floor_temp", temp); //write the value on the cloud variable called "2_floor_temp"
 }
 
 
@@ -70,7 +68,7 @@ void loop()
     
     // Check if OTA is enabled via http
     // Request path and body can be set at runtime or at setup.
-    request.hostname = "192.168.178.25"; // Insert your Webserver IP
+    request.hostname = "1.1.1.1"; // Insert your Webserver IP
     request.port = 8080; // Insert your Webserver PORT
     request.path = "/ota"; // Insert the path where the string "on" or "off" can be retrieved
 
@@ -153,11 +151,11 @@ void loop()
     Serial.print("Dew Point Slow (oC): ");
     Serial.println(DHT.getDewPointSlow());
 
-    // Uncomment or comment below rows accoring to the sensor you are going to flash
-    //Particle.publish("1_floor_temp", String(temp,1), PRIVATE);
-    //Particle.publish("1_floor_hum", String(umid, 1), PRIVATE);
-    Particle.publish("2_floor_temp", String(temp,1), PRIVATE);
-    Particle.publish("2_floor_hum", String(umid,1), PRIVATE);
+    // Commented rows below are an example if you have multiple sensors
+    Particle.publish("1_floor_temp", String(temp,1), PRIVATE);
+    Particle.publish("1_floor_hum", String(umid, 1), PRIVATE);
+    //Particle.publish("2_floor_temp", String(temp,1), PRIVATE);
+    //Particle.publish("2_floor_hum", String(umid,1), PRIVATE);
 
     // Check if OTA update is enabled
     if (response.body=="off") {
